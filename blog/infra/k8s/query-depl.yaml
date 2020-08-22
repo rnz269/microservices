@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: query-depl
+# spec describes deployment config: # of pods in set, pods id to manage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: query
+  # template describes how pods set should be created by deployment
+  template:
+    metadata:
+      # applies identifier to pods set 
+      labels:
+        app: query
+    # spec describes containers to create within each pod
+    spec:
+      containers:
+        - name: query
+          image: rnz269/query
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: query-srv
+spec:
+  type: ClusterIP
+  # which set of pods to expose (app: query)
+  selector:
+    app: query
+  ports:
+    - name: query
+      protocol: TCP
+      port: 4002
+      targetPort: 4002

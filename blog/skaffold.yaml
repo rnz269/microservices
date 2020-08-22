@@ -1,0 +1,68 @@
+apiVersion: skaffold/v2alpha3
+kind: Config
+deploy:
+  # tells skaffold there's a collection of different config files 
+  # intended for k8s inside this directory. Telling skaffold to 
+  # watch these files. anytime we make a change to one of these 
+  # files, skaffold will auto apply that config file to our k8s cluster
+  kubectl:
+    manifests:
+      - ./infra/k8s/*
+build:
+    local:
+      # skaffold defaults to pushing rebuilt image to docker hub
+      # we don't need this behavior with skaffold
+      push: false
+    artifacts:
+      # tells skaffold for code running out of client directory,
+      # when change is made to a .js file, copy that code and paste
+      # into pod so that pod always has latest code
+      # for changes to non js. files, rebuild image & update deployment
+      - image: rnz269/client
+        context: client
+        docker:
+          dockerfile: dockerfile
+        sync:
+          manual:
+            - src: 'src/**/*.js'
+              dest: .
+      - image: rnz269/comments
+        context: comments
+        docker:
+          dockerfile: dockerfile
+        sync:
+          manual:
+            - src: '*.js'
+              dest: .
+      - image: rnz269/event-bus
+        context: event-bus
+        docker:
+          dockerfile: dockerfile
+        sync:
+          manual:
+            - src: '*.js'
+              dest: .
+      - image: rnz269/moderation
+        context: moderation
+        docker:
+          dockerfile: dockerfile
+        sync:
+          manual:
+            - src: '*.js'
+              dest: .
+      - image: rnz269/posts
+        context: posts
+        docker:
+          dockerfile: dockerfile
+        sync:
+          manual:
+            - src: '*.js'
+              dest: .
+      - image: rnz269/query
+        context: query
+        docker:
+          dockerfile: dockerfile
+        sync:
+          manual:
+            - src: '*.js'
+              dest: .

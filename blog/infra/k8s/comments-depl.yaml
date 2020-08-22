@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: comments-depl
+# spec describes deployment config: # of pods in set, comments id to manage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: comments
+  # template describes how pods set should be created by deployment
+  template:
+    metadata:
+      # applies identifier to pods set 
+      labels:
+        app: comments
+    # spec describes containers to create within each pod
+    spec:
+      containers:
+        - name: comments
+          image: rnz269/comments
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: comments-srv
+spec:
+  type: ClusterIP
+  # which set of pods to expose (app: comments)
+  selector:
+    app: comments
+  ports:
+    - name: comments
+      protocol: TCP
+      port: 4001
+      targetPort: 4001

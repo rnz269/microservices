@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: posts-depl
+# spec describes deployment config: # of pods in set, pods id to manage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: posts
+  # template describes how pods set should be created by deployment
+  template:
+    metadata:
+      # applies identifier to pods set 
+      labels:
+        app: posts
+    # spec describes containers to create within each pod
+    spec:
+      containers:
+        - name: posts
+          image: rnz269/posts
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: posts-clusterip-srv
+spec:
+  type: ClusterIP
+  # which set of pods to expose (app: posts)
+  selector:
+    app: posts
+  ports:
+    - name: posts
+      protocol: TCP
+      port: 4000
+      targetPort: 4000
