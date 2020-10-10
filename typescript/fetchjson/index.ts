@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const url = 'https://jsonplaceholder.typicode.com/todos/1';
+const url = 'https://jsonplaceholder.typicode.com/todos/2';
 
 interface Todo {
   id: number;
