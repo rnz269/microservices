@@ -8,5 +8,3 @@ const map = new CustomMap('map');
 
 map.addMarker(user);
 map.addMarker(company);
-
-map.addInfoWindow({ content: user.name, location: user.location });

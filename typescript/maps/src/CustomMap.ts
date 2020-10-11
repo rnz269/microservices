@@ -1,42 +1,17 @@
 // Instructions to every other class on how they can be an argument to 'createMarker'
-interface Mappable {
+export interface Mappable {
   location: {
     lat: number;
     lng: number;
   };
-}
-
-interface Infoable {
-  location: {
-    lat: number;
-    lng: number;
-  };
-  content: string;
+  markerContent(): string;
 }
 
 export class CustomMap {
   // single property of type (google.maps.Map instance)
   private googleMap: google.maps.Map;
 
-  // public addMarker(mappable: Mappable): void {
-  //   new google.maps.Marker({ map: this.googleMap, position: mappable.location });
-  // }
-
-  public addMarker(infoable: Infoable): void {
-    var marker = new google.maps.Marker({ map: this.googleMap, position: infoable.location });
-    marker.addListener(
-      'click',
-      function () {
-        const infoWindow = new google.maps.InfoWindow({ content: 'testing' });
-        infoWindow.open(this.googleMap, marker);
-      }.bind(this),
-    );
-  }
-
-  // public addInfoWindow(infoable: Infoable): void {
-  //   new google.maps.InfoWindow({ content: infoable.content, position: infoable.location });
-  // }
-
+  // constructs a map
   constructor(divId: string) {
     this.googleMap = new google.maps.Map(document.getElementById(divId), {
       zoom: 1,
@@ -46,5 +21,17 @@ export class CustomMap {
         lng: 0,
       },
     });
+  }
+
+  // adds marker to the map
+  public addMarker(mappable: Mappable): void {
+    const marker = new google.maps.Marker({ map: this.googleMap, position: mappable.location });
+    marker.addListener(
+      'click',
+      function () {
+        const infoWindow = new google.maps.InfoWindow({ content: mappable.markerContent() });
+        infoWindow.open(this.googleMap, marker);
+      }.bind(this),
+    );
   }
 }

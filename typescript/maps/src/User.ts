@@ -1,8 +1,9 @@
 // replace with: import * as faker from 'faker' to remove subl error
 // alternatively, edit tsconfig to allowSyntheticDefaultImports
 import faker from 'faker';
+import { Mappable } from './CustomMap';
 
-export class User {
+export class User implements Mappable {
   name: string;
 
   location: {
@@ -16,5 +17,9 @@ export class User {
       lat: parseFloat(faker.address.latitude()),
       lng: parseFloat(faker.address.longitude()),
     };
+  }
+
+  markerContent(): string {
+    return `User Name: ${this.name}`;
   }
 }
