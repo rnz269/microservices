@@ -97122,7 +97122,21 @@ var company = new Company_1.Company();
 var map = new CustomMap_1.CustomMap('map');
 map.addMarker(user);
 map.addMarker(company);
+<<<<<<< HEAD
 },{"./User":"src/User.ts","./Company":"src/Company.ts","./CustomMap":"src/CustomMap.ts"}],"../../../../../../.nvm/versions/node/v14.5.0/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+||||||| merged common ancestors
+map.addInfoWindow({
+  content: user.name,
+  location: user.location
+});
+},{"./User":"src/User.ts","./Company":"src/Company.ts","./CustomMap":"src/CustomMap.ts"}],"../../../../../../.nvm/versions/node/v14.5.0/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+=======
+map.addInfoWindow({
+  content: user.name,
+  location: user.location
+});
+},{"./User":"src/User.ts","./Company":"src/Company.ts","./CustomMap":"src/CustomMap.ts"}],"../../../../../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+>>>>>>> 3cdf09ba49ae306ad0c7187d7d21f9535aca286c
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -97150,7 +97164,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58519" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65158" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -97326,5 +97340,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../../../../.nvm/versions/node/v14.5.0/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","src/index.ts"], null)
+},{}]},{},["../../../../../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","src/index.ts"], null)
 //# sourceMappingURL=/src.f10117fe.js.map
