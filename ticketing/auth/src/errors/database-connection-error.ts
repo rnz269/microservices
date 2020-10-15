@@ -1,16 +1,15 @@
-interface CommonErrorStructure {
-  errors: { message: string; field?: string }[];
-}
+import { CustomError } from './custom-error';
 
-export class DatabaseConnectionError extends Error {
+export class DatabaseConnectionError extends CustomError {
   reason = 'Error connecting to database';
   statusCode = 500;
   constructor() {
-    super();
+    // providing argument to built-in Error, for server logs
+    super('error connecting to db');
     // Only because we are extending a built in class -- TS issue workaround
     Object.setPrototypeOf(this, DatabaseConnectionError.prototype);
   }
-  serializeError(): CommonErrorStructure {
-    return { errors: [{ message: this.reason }] };
+  serializeErrors() {
+    return [{ message: this.reason }];
   }
 }
