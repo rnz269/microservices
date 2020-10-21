@@ -5,7 +5,7 @@ export class NotFoundError extends CustomError {
   statusCode = 404;
   constructor() {
     // providing argument to built-in Error, for server logs
-    super('could not find resource');
+    super('Route not found');
     // Only because we are extending a built in class -- TS issue workaround
     Object.setPrototypeOf(this, NotFoundError.prototype);
   }

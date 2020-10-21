@@ -1,9 +1,10 @@
 import express, { Request, Response } from 'express';
-// body is a middleware function that checks req.body & appends error info to req
-// validationResult is a function that pulls off validation error info of req
+import { User } from '../models/user';
+// body is a mw function that checks req.body & appends error info to req
+// validationResult is a func that pulls validation error info off req
 import { body, validationResult } from 'express-validator';
 import { RequestValidationError } from '../errors/request-validation-error';
-import { DatabaseConnectionError } from '../errors/database-connection-error';
+import { BadRequestError } from '../errors/bad-request-error';
 
 const router = express.Router();
 
@@ -16,7 +17,7 @@ router.post(
       .isLength({ min: 4, max: 20 })
       .withMessage('Password must be between 4 and 20 characters'),
   ],
-  (req: Request, res: Response) => {
+  async (req: Request, res: Response) => {
     // pull off validation error info to errors object
     const errors = validationResult(req);
 
@@ -25,12 +26,19 @@ router.post(
       throw new RequestValidationError(errors.array());
     }
 
+    // check if email already exists
     const { email, password } = req.body;
-
-    console.log('Creating a user...');
-    throw new DatabaseConnectionError();
-
-    res.send({});
+    // if mongoose finds match in db, existingUser will be not null.
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      throw new BadRequestError('Email address already in use');
+    }
+    // hash the password user entered
+    // create new user and save them to db
+    const user = User.build({ email, password });
+    await user.save();
+    // send them a cookie since they're now logged in
+    res.status(201).send(user);
   }
 );
 
