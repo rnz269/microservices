@@ -1,7 +1,7 @@
-import express from 'express';
+import express from 'express'; // module factory function
 import 'express-async-errors';
-import { json } from 'body-parser';
-import mongoose from 'mongoose';
+import { json } from 'body-parser'; // json module factory function
+import mongoose from 'mongoose'; // mongoose is a class instance (singleton)
 
 import { currentUserRouter } from './routes/current-user';
 import { signinRouter } from './routes/signin';
@@ -19,7 +19,7 @@ app.use(signinRouter);
 app.use(signoutRouter);
 app.use(signupRouter);
 
-// demonstrating express async error issues, and how 'express-async-errors' library fixes them
+// 'express-async-errors' library allows express to auto-handle async errors (rather than require manual next(e) call)
 app.all('*', async () => {
   throw new NotFoundError();
 });
