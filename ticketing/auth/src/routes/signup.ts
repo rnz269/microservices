@@ -1,10 +1,11 @@
 import express, { Request, Response } from 'express';
-import { User } from '../models/user';
+import jwt from 'jsonwebtoken';
 // body is a mw function that checks req.body & appends error info to req
 // validationResult is a func that pulls validation error info off req
-import { body, validationResult } from 'express-validator';
-import { RequestValidationError } from '../errors/request-validation-error';
+import { body } from 'express-validator';
+import { validateRequest } from '../middlewares/validate-request';
 import { BadRequestError } from '../errors/bad-request-error';
+import { User } from '../models/user';
 
 const router = express.Router();
 
@@ -17,27 +18,30 @@ router.post(
       .isLength({ min: 4, max: 20 })
       .withMessage('Password must be between 4 and 20 characters'),
   ],
+  validateRequest, // process errors appended by validator middleware
   async (req: Request, res: Response) => {
-    // pull off validation error info to errors object
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-      // since this is sync code, don't need to manually call next(errors);
-      throw new RequestValidationError(errors.array());
-    }
-
-    // check if email already exists
     const { email, password } = req.body;
-    // if mongoose finds match in db, existingUser will be not null.
+    // STEP 1: ensure user doesn't already exist in db
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       throw new BadRequestError('Email address already in use');
     }
-    // hash the password user entered
-    // create new user and save them to db
+
+    // STEP 3: since user doesn't exist, create new user document and save them to db
     const user = User.build({ email, password });
-    await user.save();
-    // send them a cookie since they're now logged in
+    await user.save(); // STEP 2: behind scenes, mongoose hashes pw before saving to db (check user model)
+
+    // STEP 4: User now logged in - send them a cookie/JWT for auth in future requests
+    // generate JWT
+    const userJwt = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.JWT_KEY!
+    );
+
+    // store created JWT in cookie
+    req.session = { jwt: userJwt };
+
+    // send method returns json data (calls toJSON on obj). Response includes cookie.
     res.status(201).send(user);
   }
 );

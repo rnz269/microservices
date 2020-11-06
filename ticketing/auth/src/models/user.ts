@@ -10,7 +10,7 @@ interface UserAttrs {
 }
 
 //describes the properties that a User Model has: issue 1
-// UserModel interface extends mongoose.Model, and is a collection of UserDocs
+// UserModel interface extends mongoose.Model, and represents a collection of UserDocs
 interface UserModel extends mongoose.Model<UserDoc> {
   build(attrs: UserAttrs): UserDoc; // return value of build method must be type UserDoc
 }
@@ -22,15 +22,49 @@ interface UserDoc extends mongoose.Document {
   // if we had extra properties that mongoose added, we'd list them here
 }
 
-const userSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    required: true,
+const userSchema = new mongoose.Schema(
+  {
+    email: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
   },
-  password: {
-    type: String,
-    required: true,
-  },
+  // second argument: options object of type mongoose.SchemaOptions
+  {
+    // toJSON object
+    toJSON: {
+      // when we call res.send(obj), express calls JSON.stringify(obj)
+      // stringify's usual behavior is overridden by transform function below (like toJSON)
+      // transform function applies to the document before returning
+      // doc is the actual user document instance, and ret is the obj. representation
+      // that we will mutate. ret is implicitly returned, converted to json.
+      transform(doc, ret) {
+        ret.id = ret._id;
+        delete ret._id;
+        delete ret.password;
+        delete ret.__v;
+      },
+    },
+  }
+);
+
+// runs every time we call user.save(), hashing the inputted plain-text password
+// within, 'this' refers to document being saved
+userSchema.pre('save', async function (done) {
+  // checking to see if password field has been modified. may not be if user is changing email
+  // so we wouldn't want to hash an already hashed password
+  // on registration, password will be considered modified
+  if (this.isModified('password')) {
+    // construct hash
+    const hashed = await Password.toHash(this.get('password'));
+    // set password field as hashed value
+    this.set('password', hashed);
+  }
+  done();
 });
 
 // to create new user, call User.build(..) instead of default constructor new User(..)
@@ -41,7 +75,7 @@ userSchema.statics.build = function (attrs: UserAttrs) {
 };
 
 // mongoose creates a model out of schema. model is the CRUD interface to reach MongoDB
-// we give model constructor template vars UserDoc and UserModel, it returns type UserModel
+// we give model constructor template vars UserDoc and UserModel, it returns type UserModel, which represents a collection of UserDocs
 // Now, User: UserModel, so we can use build method on it
 const User = mongoose.model<UserDoc, UserModel>('User', userSchema);
 
@@ -53,7 +87,7 @@ step 0: understand terminology.
 a model represents a mongo collection of documents. it's also the crud interface to mongodb.
 a document represents one aggregate/row/observation.
 
-step 1: create a userSchema
+step 1: create a userSchema to define the shape of the aggregate
 
 step 2: feed schema into Mongoose model:
 const User = mongoose.model('User', userSchema)

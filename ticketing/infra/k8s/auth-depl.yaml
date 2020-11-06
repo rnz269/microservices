@@ -19,6 +19,15 @@ spec:
       containers:
         - name: auth
           image: rnz269/auth
+          # env is an array where we list env variables, which code within auth container
+          # can access by name, e.g. JWT_KEY.
+          # Value is grabbed from k8s Secret object we just created with CLI
+          env:
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
 ---
 apiVersion: v1
 kind: Service
