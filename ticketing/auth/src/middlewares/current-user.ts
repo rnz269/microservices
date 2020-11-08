@@ -26,6 +26,7 @@ export const currentUser = (
     return next();
   }
 
+  // Now we know the JWT is set. Let's ensure user hasn't manipulated it:
   // STEP 2: if set and valid, extract info stored inside the JWT (payload) and store on req.currentUser
   try {
     const payload = jwt.verify(
