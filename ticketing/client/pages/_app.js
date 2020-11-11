@@ -1,11 +1,13 @@
 // https://github.com/vercel/next.js/blob/master/errors/css-global.md
 import 'bootstrap/dist/css/bootstrap.css';
+import buildClient from '../api/build-client';
+import Header from '../components/header';
 
 /*
 we want css on every page -- thus, we're importing global css into our nextjs project
 We can only import global css in this _app.js file
 
-The following function wors like this:
+The following function works like this:
 When a user visits a page in our nextjs app, nextjs will import relevant page component
 But next doesn't just show this page -- rather, it wraps it inside its own custom
 default component referred to as app. we defined _app so that nextjs passes relevant page
@@ -16,6 +18,27 @@ This is the only file we're guaranteed to load up no matter which route user vis
 Whereas, if user visits banana route, next won't parse index, so any css in index is moot
 */
 
-export default ({ Component, pageProps }) => {
-  return <Component {...pageProps} />;
+const AppComponent = ({ Component, pageProps, currentUser }) => {
+  return (
+    <div>
+      <Header currentUser={currentUser} />
+      <Component {...pageProps} />
+    </div>
+  );
 };
+
+AppComponent.getInitialProps = async (appContext) => {
+  const client = buildClient(appContext.ctx);
+  const { data } = await client.get('/api/users/currentuser');
+  let pageProps = {};
+  // some pages won't have a defined getInitialProps, so we must check before executing
+  if (appContext.Component.getInitialProps) {
+    pageProps = await appContext.Component.getInitialProps(appContext.ctx);
+  }
+  return {
+    pageProps,
+    currentUser: data.currentUser,
+  };
+};
+
+export default AppComponent;

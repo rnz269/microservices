@@ -7,6 +7,7 @@ will be used wherever we need to make a request, & process response data/display
 ***/
 
 export default function useRequest({ url, method, body, onSuccess }) {
+  // store error message jsx in state
   const [errors, setErrors] = useState(null);
 
   async function doRequest(event) {

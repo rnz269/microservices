@@ -2,7 +2,7 @@ import request from 'supertest';
 import { app } from '../../app';
 
 // last test: if not logged in, return null
-it('get currentUser when not signed in', async () => {
+it('responds with null if not authenticated', async () => {
   const response = await request(app)
     .get('/api/users/currentuser')
     .send()
