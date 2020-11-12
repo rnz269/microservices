@@ -21,7 +21,8 @@ export const currentUser = (
   next: NextFunction
 ) => {
   // STEP 1: If req.session.jwt is not set, return early.
-  // only way it's not set is if we didn't use cookieSession mw prior to this route
+  // only way req.session isn't set is if we didn't apply cookieSession mw to express app prior to this route
+  // of course, req.session will be empty object if not signed in, or contain jwt if signed in
   if (!req.session?.jwt) {
     return next();
   }

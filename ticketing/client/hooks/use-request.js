@@ -2,8 +2,8 @@ import { useState } from 'react';
 import axios from 'axios';
 
 /*** 
-useRequest returns a fn that makes an https request, along with formatted error jsx
-will be used wherever we need to make a request, & process response data/display errors
+useRequest returns a) a fn that when invoked, makes an https request & b) formatted error jsx
+This hook will be used wherever we need to make a request, & process response data/display errors
 ***/
 
 export default function useRequest({ url, method, body, onSuccess }) {
