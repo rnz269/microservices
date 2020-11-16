@@ -35,3 +35,11 @@ build:
         manual:
           - src: '**/*.js'
             dest: .
+    - image: rnz269/tickets
+      context: tickets
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .

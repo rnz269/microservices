@@ -1,30 +1,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: auth-depl
-# spec describes deployment config: # of pods in set, selector describes which pods to manage (based off auth id)
+  name: tickets-depl
+# spec describes deployment config: # of pods in set, selector describes which pods to manage (based off tickets id)
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: auth
+      app: tickets
   # template describes how pods set should be created by deployment
   template:
     metadata:
       # applies identifier to pods set
       labels:
-        app: auth
+        app: tickets
     # spec describes containers to create within each pod
     spec:
       containers:
-        - name: auth
-          image: rnz269/auth
-          # env is an array where we list env variables, which code within auth container
+        - name: tickets
+          image: rnz269/tickets
+          # env is an array where we list env variables, which code within tickets container
           # can access by name, e.g. JWT_KEY.
           # Value is grabbed from k8s Secret object we just created with CLI
           env:
             - name: MONGO_URI
-              value: 'mongodb://auth-mongo-srv:27017/auth'
+              value: 'mongodb://tickets-mongo-srv:27017/tickets'
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
@@ -34,14 +34,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: auth-srv
+  name: tickets-srv
 spec:
   type: ClusterIP
-  # which set of pods to expose (app: auth)
+  # which set of pods to expose (app: tickets)
   selector:
-    app: auth
+    app: tickets
   ports:
-    - name: auth
+    - name: tickets
       protocol: TCP
       port: 3000
       targetPort: 3000

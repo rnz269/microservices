@@ -3,8 +3,7 @@ import jwt from 'jsonwebtoken';
 // body is a mw function that checks req.body & appends error info to req
 // validationResult is a func that pulls validation error info off req
 import { body } from 'express-validator';
-import { validateRequest } from '../middlewares/validate-request';
-import { BadRequestError } from '../errors/bad-request-error';
+import { BadRequestError, validateRequest } from '@rntickets/common';
 import { User } from '../models/user';
 
 const router = express.Router();

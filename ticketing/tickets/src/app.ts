@@ -2,12 +2,12 @@ import express from 'express'; // module factory function
 import 'express-async-errors';
 import { json } from 'body-parser'; // json module factory function
 import cookieSession from 'cookie-session'; // module factory function
+import { errorHandler, NotFoundError, currentUser } from '@rntickets/common';
 
-import { currentUserRouter } from './routes/current-user';
-import { signinRouter } from './routes/signin';
-import { signoutRouter } from './routes/signout';
-import { signupRouter } from './routes/signup';
-import { errorHandler, NotFoundError } from '@rntickets/common';
+import { createTicketRouter } from './routes/new';
+import { showTicketRouter } from './routes/show';
+import { indexTicketRouter } from './routes/index';
+import { updateTicketRouter } from './routes/update';
 
 /*****  Creates and Configures Express Application *****/
 const app = express();
@@ -22,11 +22,12 @@ app.use(
     secure: process.env.NODE_ENV !== 'test', // (jest auto-sets NODE_ENV to test) cookies only used if user visiting our app over https connection
   })
 );
+app.use(currentUser);
 
-app.use(currentUserRouter);
-app.use(signinRouter);
-app.use(signoutRouter);
-app.use(signupRouter);
+app.use(createTicketRouter);
+app.use(showTicketRouter);
+app.use(indexTicketRouter);
+app.use(updateTicketRouter);
 
 // 'express-async-errors' library allows express to auto-handle async errors (rather than require manual next(e) call)
 app.all('*', async () => {

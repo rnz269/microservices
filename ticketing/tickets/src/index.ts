@@ -4,7 +4,7 @@ import { app } from './app';
 /*****  Starts up Express Application *****/
 const start = async () => {
   if (!process.env.JWT_KEY) {
-    throw new Error('Requested environment variable does not exist');
+    throw new Error('JWT_KEY must be defined');
   }
   if (!process.env.MONGO_URI) {
     throw new Error('MONGO_URI must be defined');
