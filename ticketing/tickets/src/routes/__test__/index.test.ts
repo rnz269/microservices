@@ -15,9 +15,6 @@ it('has a route handler listening to /api/tickets for GET requests', async () =>
 });
 
 it('can fetch a list of tickets', async () => {
-  const title = 'calculator';
-  const price = 20;
-
   // create a few tickets in db (warning: external dependency on post route)
   await createTicket();
   await createTicket();
