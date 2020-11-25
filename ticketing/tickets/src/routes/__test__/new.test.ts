@@ -1,6 +1,7 @@
 import request from 'supertest';
 import { app } from '../../app';
 import { Ticket } from '../../models/ticket';
+import { natsWrapper } from '../../nats-wrapper';
 
 it('has a route handler listening to /api/tickets for post requests', async () => {
   const response = await request(app).post('/api/tickets').send({});
@@ -67,4 +68,20 @@ it('creates a ticket when provided with valid inputs', async () => {
   expect(tickets.length).toEqual(1);
   expect(tickets[0].price).toEqual(20);
   expect(tickets[0].title).toEqual(title);
+});
+
+it('publishes an event', async () => {
+  const title = 'calculator';
+
+  await request(app)
+    .post('/api/tickets')
+    .set('Cookie', global.signin())
+    .send({
+      title,
+      price: 20,
+    })
+    .expect(201);
+
+  // should be able to say that the publish fn was called -- to do so, at top, import nats-wrapper
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
 });

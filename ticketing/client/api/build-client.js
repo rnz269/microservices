@@ -7,7 +7,7 @@ import axios from 'axios';
   (e.g. we import this & use: await buildClient(context).get(path))
 */
 
-export default ({ req }) => {
+export default function buildClient({ req }) {
   if (typeof window === 'undefined') {
     // we're on the server, so requests should be made to long url
     return axios.create({
@@ -21,7 +21,7 @@ export default ({ req }) => {
       baseUrl: '/',
     });
   }
-};
+}
 
 /*
 old version: 

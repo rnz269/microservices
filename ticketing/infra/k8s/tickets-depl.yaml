@@ -20,11 +20,20 @@ spec:
         - name: tickets
           image: rnz269/tickets
           # env is an array where we list env variables, which code within tickets container
-          # can access by name, e.g. JWT_KEY.
-          # Value is grabbed from k8s Secret object we just created with CLI
+          # can access by name, e.g. process.env.MONGO_URI.
           env:
+            # grabs the pod instance's name, guaranteed to be unique
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NATS_URL
+              value: 'http://nats-srv:4222'
+            - name: NATS_CLUSTER_ID
+              value: 'ticketing'
             - name: MONGO_URI
               value: 'mongodb://tickets-mongo-srv:27017/tickets'
+            # Value is grabbed from k8s Secret object we created with CLI
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:

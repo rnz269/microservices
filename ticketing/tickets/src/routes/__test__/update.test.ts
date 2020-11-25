@@ -1,6 +1,7 @@
 import request from 'supertest';
 import { app } from '../../app';
 import mongoose from 'mongoose';
+import { natsWrapper } from '../../nats-wrapper';
 
 const id = new mongoose.Types.ObjectId().toHexString();
 
@@ -91,4 +92,34 @@ it('updates a ticket when provided with valid inputs', async () => {
     .send();
   expect(response.body.title).toEqual(title);
   expect(response.body.price).toEqual(price);
+});
+
+it('publishes an event', async () => {
+  const cookie = global.signin(); // save ref to ensure ticket owner making request
+  // create the ticket
+  const ticket = await request(app)
+    .post('/api/tickets')
+    .set('Cookie', cookie)
+    .send({
+      title: 'abcd',
+      price: 20,
+    })
+    .expect(201);
+
+  // update data to:
+  const title = 'calculator';
+  const price = 100;
+
+  // perform update
+  await request(app)
+    .put(`/api/tickets/${ticket.body.id}`)
+    .set('Cookie', cookie)
+    .send({
+      title,
+      price,
+    })
+    .expect(200);
+
+  // should be able to say that the publish fn was called -- to do so, at top, import nats-wrapper
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
 });

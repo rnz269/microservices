@@ -1,7 +1,6 @@
 // issue 1: properties we pass to Ticket constructor aren't checked by TS
 // issue 2: properties avail on indiv. ticket doc may not match those passed to constructor
 import mongoose from 'mongoose';
-
 // describes the properties required to create a new ticket: issue 1
 interface TicketAttrs {
   title: string;

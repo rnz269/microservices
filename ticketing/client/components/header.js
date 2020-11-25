@@ -2,7 +2,7 @@
 // instead, we use custom component called Link
 import Link from 'next/link';
 
-export default ({ currentUser }) => {
+export default function Header({ currentUser }) {
   // trick to show content based on single filtering criteria:
   const links = [
     !currentUser && { label: 'Sign Up', href: '/auth/signup' },
@@ -29,7 +29,7 @@ export default ({ currentUser }) => {
       </div>
     </nav>
   );
-};
+}
 
 /* 
 Our trick to show content based on single filtering criteria

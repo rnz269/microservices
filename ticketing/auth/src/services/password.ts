@@ -4,6 +4,7 @@ import { promisify } from 'util';
 // scrypt is callback based -- convert it to return promise
 const scryptAsync = promisify(scrypt);
 
+// could have made Password a namespace, since it's essentially an obj w/ 2 methods
 export class Password {
   static async toHash(password: string) {
     // generate a salt (a random string)
