@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { OrderStatus } from '@rntickets/common';
 import { TicketDoc } from './ticket';
+import { VoidExpression } from 'typescript';
 
 interface OrderAttrs {
   userId: string;
@@ -14,6 +15,7 @@ interface OrderDoc extends mongoose.Document {
   status: OrderStatus;
   expiresAt: Date;
   ticket: TicketDoc;
+  version: number;
 }
 
 interface OrderModel extends mongoose.Model<OrderDoc> {

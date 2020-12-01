@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { version } from 'mongoose';
 import express, { Request, Response } from 'express';
 import {
   NotFoundError,
@@ -60,6 +60,7 @@ router.post(
     // 5) Publish an event to indicate an order has been created
     await new OrderCreatedPublisher(natsWrapper.client).publish({
       id: order.id,
+      version: order.version,
       status: order.status,
       userId: order.userId,
       expiresAt: order.expiresAt.toISOString(),
