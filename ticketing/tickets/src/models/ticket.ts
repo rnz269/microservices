@@ -1,6 +1,8 @@
 // issue 1: properties we pass to Ticket constructor aren't checked by TS
 // issue 2: properties avail on indiv. ticket doc may not match those passed to constructor
 import mongoose from 'mongoose';
+import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
+
 // describes the properties required to create a new ticket: issue 1
 interface TicketAttrs {
   title: string;
@@ -19,7 +21,8 @@ interface TicketDoc extends mongoose.Document {
   title: string;
   price: number;
   userId: string;
-  // if we had extra properties that mongoose added, we'd list them here
+  // extra property added by mongoose
+  version: number;
 }
 
 const ticketSchema = new mongoose.Schema(
@@ -48,6 +51,10 @@ const ticketSchema = new mongoose.Schema(
     },
   }
 );
+
+// tell mongoose we want to track version using field version, rather than __v
+ticketSchema.set('versionKey', 'version');
+ticketSchema.plugin(updateIfCurrentPlugin);
 
 // to create new ticket, call Ticket.build(..) instead of default constructor new Ticket(..)
 // allows TS to check the argument, as mongoose prevents TS from doing so
