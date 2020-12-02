@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
+import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 import { OrderStatus } from '@rntickets/common';
 import { TicketDoc } from './ticket';
-import { VoidExpression } from 'typescript';
 
 interface OrderAttrs {
   userId: string;
@@ -59,6 +59,11 @@ const orderSchema = new mongoose.Schema(
     },
   }
 );
+
+// rename version key from _v to version
+orderSchema.set('versionKey', 'version');
+// use versioning plugin
+orderSchema.plugin(updateIfCurrentPlugin);
 
 // will give us the build method on the actual order model
 orderSchema.statics.build = function (attrs: OrderAttrs) {

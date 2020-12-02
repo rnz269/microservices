@@ -5,6 +5,8 @@ import { Ticket } from '../../models/ticket';
 import { Order, OrderStatus } from '../../models/order';
 import { natsWrapper } from '../../nats-wrapper'; // imports mock natsWrapper, too!
 
+const id = mongoose.Types.ObjectId().toHexString();
+
 it('returns an error if the ticket does not exist', async () => {
   const ticketId = mongoose.Types.ObjectId();
   await request(app)
@@ -17,7 +19,7 @@ it('returns an error if the ticket does not exist', async () => {
 it('returns an error if the ticket is already reserved', async () => {
   // SETUP
   // create a ticket in database
-  const ticket = Ticket.build({ title: 'cubs game', price: 100 });
+  const ticket = Ticket.build({ id, title: 'cubs game', price: 100 });
   await ticket.save();
   // create an order to reserve ticket, save in database
   const order = Order.build({
@@ -40,7 +42,7 @@ it('returns an error if the ticket is already reserved', async () => {
 it('reserves a ticket', async () => {
   // SETUP
   // create a ticket in database
-  const ticket = Ticket.build({ title: 'cubs game', price: 100 });
+  const ticket = Ticket.build({ id, title: 'cubs game', price: 100 });
   await ticket.save();
   // END SETUP
 
@@ -55,7 +57,7 @@ it('reserves a ticket', async () => {
 it('emits an order created event', async () => {
   // SETUP
   // create a ticket in database
-  const ticket = Ticket.build({ title: 'cubs game', price: 200 });
+  const ticket = Ticket.build({ id, title: 'cubs game', price: 200 });
   await ticket.save();
 
   await request(app)

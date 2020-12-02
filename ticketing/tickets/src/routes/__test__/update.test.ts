@@ -2,6 +2,7 @@ import request from 'supertest';
 import { app } from '../../app';
 import mongoose from 'mongoose';
 import { natsWrapper } from '../../nats-wrapper';
+import { Ticket } from '../../models/ticket';
 
 const id = new mongoose.Types.ObjectId().toHexString();
 
@@ -122,4 +123,38 @@ it('publishes an event', async () => {
 
   // should be able to say that the publish fn was called -- to do so, at top, import nats-wrapper
   expect(natsWrapper.client.publish).toHaveBeenCalled();
+});
+
+it('throws 400 if user attempts to update ticket while it is reserved', async () => {
+  const oldPrice = 100;
+  const newPrice = 200;
+  const user1 = global.signin();
+  // create a ticket with an orderId, save to tickets database
+  const response = await request(app)
+    .post('/api/tickets')
+    .set('Cookie', user1)
+    .send({
+      title: 'cubs ticket',
+      price: oldPrice,
+      userId: 'abc',
+    });
+
+  // add orderId to ticket
+  const ticket = await Ticket.findById(response.body.id);
+  ticket!.set({ orderId: mongoose.Types.ObjectId().toHexString() });
+  await ticket!.save();
+
+  // make a request to update route, expect a 400
+  await request(app)
+    .put(`/api/tickets/${ticket!.id}`)
+    .set('Cookie', user1)
+    .send({
+      title: 'cubs ticket',
+      price: newPrice,
+    })
+    .expect(400);
+
+  // this ticket's price should not have been updated
+  const notUpdatedTicket = await Ticket.findById(ticket!.id);
+  expect(notUpdatedTicket!.price).toEqual(oldPrice);
 });

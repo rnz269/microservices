@@ -5,6 +5,7 @@ import {
   NotAuthorizedError,
   requireAuth,
   validateRequest,
+  BadRequestError,
 } from '@rntickets/common';
 import { natsWrapper } from '../nats-wrapper';
 import { TicketUpdatedPublisher } from '../events/publishers/ticket-updated-publisher';
@@ -30,6 +31,9 @@ router.put(
     }
     if (ticket.userId !== req.currentUser!.id) {
       throw new NotAuthorizedError();
+    }
+    if (ticket.orderId) {
+      throw new BadRequestError('Cannot edit a reserved ticket');
     }
     ticket.set({
       title: req.body.title,

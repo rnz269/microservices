@@ -8,9 +8,11 @@ interface TicketAttrs {
   price: number;
 }
 
+// mongoose.Document interface defines _id
 interface TicketDoc extends mongoose.Document {
   title: string;
   price: number;
+  // added properties not on TicketAttrs
   version: number;
   isReserved(): Promise<boolean>;
 }

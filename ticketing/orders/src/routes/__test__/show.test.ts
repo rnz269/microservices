@@ -5,7 +5,11 @@ import { Ticket, TicketDoc } from '../../models/ticket';
 
 // helper to expedite process of creating multiple tickets
 const buildTicket = async (title: string, price: number) => {
-  const ticket = Ticket.build({ title, price });
+  const ticket = Ticket.build({
+    id: mongoose.Types.ObjectId().toHexString(),
+    title,
+    price,
+  });
   await ticket.save();
   return ticket;
 };
