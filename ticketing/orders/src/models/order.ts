@@ -66,9 +66,9 @@ orderSchema.set('versionKey', 'version');
 orderSchema.plugin(updateIfCurrentPlugin);
 
 // will give us the build method on the actual order model
-orderSchema.statics.build = function (attrs: OrderAttrs) {
+orderSchema.static('build', (attrs: OrderAttrs) => {
   return new Order(attrs);
-};
+});
 
 // define our actual model
 // 'Order' refers to the name of the collection

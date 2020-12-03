@@ -70,9 +70,9 @@ userSchema.pre('save', async function (done) {
 // to create new user, call User.build(..) instead of default constructor new User(..)
 // allows TS to check the argument, as mongoose prevents TS from doing so
 // Must add build method to UserModel interface for TS to recognize it
-userSchema.statics.build = function (attrs: UserAttrs) {
+userSchema.static('build', function (attrs: UserAttrs) {
   return new User(attrs);
-};
+});
 
 // mongoose creates a model out of schema. model is the CRUD interface to reach MongoDB
 // we give model constructor template vars UserDoc and UserModel, it returns type UserModel, which represents a collection of UserDocs

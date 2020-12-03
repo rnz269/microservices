@@ -63,9 +63,16 @@ ticketSchema.plugin(updateIfCurrentPlugin);
 // to create new ticket, call Ticket.build(..) instead of default constructor new Ticket(..)
 // allows TS to check the argument, as mongoose prevents TS from doing so
 // Must add build method to TicketModel interface for TS to recognize it
+ticketSchema.static('build', (attrs: TicketAttrs) => {
+  return new Ticket(attrs);
+});
+
+/*
+// old way to declare new method on model
 ticketSchema.statics.build = function (attrs: TicketAttrs) {
   return new Ticket(attrs);
 };
+*/
 
 // mongoose creates a model out of schema. model is the CRUD interface to reach MongoDB
 // we give model constructor template vars TicketDoc and TicketModel, it returns type TicketModel, which represents a collection of TicketDocs

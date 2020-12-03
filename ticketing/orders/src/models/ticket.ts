@@ -55,28 +55,28 @@ ticketSchema.set('versionKey', 'version');
 ticketSchema.plugin(updateIfCurrentPlugin);
 
 // will give us the query method on the actual ticket model
-ticketSchema.statics.findByEvent = function (event: {
-  id: string;
-  version: number;
-}) {
-  return Ticket.findOne({
-    _id: event.id,
-    version: event.version - 1,
-  });
-};
+ticketSchema.static(
+  'findByEvent',
+  function (event: { id: string; version: number }) {
+    return Ticket.findOne({
+      _id: event.id,
+      version: event.version - 1,
+    });
+  }
+);
 
 // will give us the build method on the actual ticket model
-ticketSchema.statics.build = function (attrs: TicketAttrs) {
+ticketSchema.static('build', (attrs: TicketAttrs) => {
   return new Ticket({
     _id: attrs.id,
     title: attrs.title,
     price: attrs.price,
   });
-};
+});
 
 // will give us the isReserved method on each instance of a TicketDoc
 // isReserved method checks whether a TicketDoc is currently reserved by a user
-ticketSchema.methods.isReserved = async function () {
+ticketSchema.method('isReserved', async function (this: TicketDoc) {
   const existingOrder = await Order.findOne({
     ticket: this,
     status: {
@@ -88,7 +88,7 @@ ticketSchema.methods.isReserved = async function () {
     },
   });
   return !!existingOrder;
-};
+});
 
 // define our actual model
 // 'Ticket' refers to the name of the collection
