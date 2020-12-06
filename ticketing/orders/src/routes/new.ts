@@ -63,7 +63,7 @@ router.post(
       version: order.version,
       status: order.status,
       userId: order.userId,
-      expiresAt: order.expiresAt.toISOString(),
+      expiresAt: order.expiresAt.toISOString(), // convert from date to string
       ticket: {
         id: ticket.id,
         price: ticket.price,

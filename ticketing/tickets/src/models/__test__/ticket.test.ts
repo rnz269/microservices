@@ -1,6 +1,6 @@
 import { Ticket } from '../ticket';
 
-// SIMPLY TESTING OUR TICKET MODEL, THAT IT IMPLEMENTS OPTIMISTIC CONCURRENCY
+// SIMPLY TESTING THAT OUR TICKET MODEL IMPLEMENTS OPTIMISTIC CONCURRENCY
 
 it('implements optimistic concurrency control', async (done) => {
   // Create an instance of a ticket

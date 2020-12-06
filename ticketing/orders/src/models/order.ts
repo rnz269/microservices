@@ -38,7 +38,8 @@ const orderSchema = new mongoose.Schema(
       enum: Object.values(OrderStatus), // not necessary, as interfaces should take care
       default: OrderStatus.Created, // not necessary, since we have multiple checks
     },
-    // when user pays for an order, it should be saved forever => expiration not required
+    // when user pays for an order, it should be saved forever => expiration not a required property
+    // notice, we specify date object, not string. when publishing event, we convert to string
     expiresAt: {
       type: mongoose.Schema.Types.Date,
     },

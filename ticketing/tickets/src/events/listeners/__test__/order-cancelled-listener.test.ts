@@ -4,7 +4,6 @@ import { OrderCancelledEvent } from '@rntickets/common';
 import { OrderCancelledListener } from '../order-cancelled-listener';
 import { Ticket } from '../../../models/ticket';
 import { natsWrapper } from '../../../nats-wrapper';
-import { json } from 'express';
 
 /* Test OrderCancelledListener to ensure it performs appropriate logic upon receiving an OrderCancelledEvent */
 

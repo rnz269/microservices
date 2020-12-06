@@ -73,7 +73,7 @@ it('ensures TicketUpdatedListener does not call ack when provided events out of 
   try {
     await listener.onMessage(data, msg);
   } catch (err) {
-    console.log(err);
+    console.log('expecting an error, bad data version supplied: ', err);
   }
 
   // write assertions to ensure ticket was updated
