@@ -2,7 +2,7 @@ import axios from 'axios';
 
 /* 
   - returns a preconfigured version of axios
-  - preconfigured version will be like a normal axios client w/ baseurl and headers 
+  - preconfigured version will be like a normal axios client w/ baseurl and headers
   already specified
   (e.g. we import this & use: await buildClient(context).get(path))
 */

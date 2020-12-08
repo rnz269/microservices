@@ -22,19 +22,28 @@ const AppComponent = ({ Component, pageProps, currentUser }) => {
   return (
     <div>
       <Header currentUser={currentUser} />
-      <Component {...pageProps} />
+      <div className="container">
+        <Component currentUser={currentUser} {...pageProps} />
+      </div>
     </div>
   );
 };
 
 AppComponent.getInitialProps = async (appContext) => {
+  // fetch some data on the current user
   const client = buildClient(appContext.ctx);
   const { data } = await client.get('/api/users/currentuser');
+
   let pageProps = {};
-  // some pages won't have a defined getInitialProps, so we must check before executing
+  // manually invoke the component's getInitialProps IF the component has defined it
   if (appContext.Component.getInitialProps) {
-    pageProps = await appContext.Component.getInitialProps(appContext.ctx);
+    pageProps = await appContext.Component.getInitialProps(
+      appContext.ctx,
+      client,
+      data.currentUser
+    );
   }
+
   return {
     pageProps,
     currentUser: data.currentUser,

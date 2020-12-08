@@ -10,7 +10,7 @@ export default function useRequest({ url, method, body, onSuccess }) {
   // store error message jsx in state
   const [errors, setErrors] = useState(null);
 
-  async function doRequest(event) {
+  async function doRequest(props = {}) {
     /* request goes to ingress-nginx controller, which routes to appropriate clusterip,
     which routes to pod whose container is running auth microservice app. The express
     app matches request to appropriate route, performs backend logic & responds. */
@@ -18,7 +18,10 @@ export default function useRequest({ url, method, body, onSuccess }) {
       // reset errors' state before next request
       setErrors(null);
       // axios[method] specifies a lookup on axios object using method var
-      const response = await axios[method](url, body);
+      const response = await axios[method](url, {
+        ...body,
+        ...props,
+      });
       // if onSuccess arg was provided, call it
       if (onSuccess) {
         onSuccess(response.data);
